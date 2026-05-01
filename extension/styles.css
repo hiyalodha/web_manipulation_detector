@@ -1,0 +1,74 @@
+/* ============================================================
+   styles.css — Web Manipulation Detector
+   Injected into every page to style detected elements.
+   ============================================================ */
+
+/* Highlight wrapper — red border + subtle background tint */
+.wmd-highlight {
+  outline: 2px solid #ff3b3b !important;
+  outline-offset: 2px !important;
+  background-color: rgba(255, 59, 59, 0.08) !important;
+  border-radius: 3px !important;
+  cursor: help !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.wmd-highlight:hover {
+  background-color: rgba(255, 59, 59, 0.18) !important;
+}
+
+/* Tooltip — appears above the element on hover */
+.wmd-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2147483647; /* max z-index, always on top */
+  width: 240px;
+  background: #1a1a2e;
+  color: #f0f0f0;
+  border: 1px solid #ff3b3b;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  box-shadow: 0 4px 20px rgba(255, 59, 59, 0.3);
+  pointer-events: none;
+  white-space: normal;
+}
+
+/* Arrow pointing down from tooltip */
+.wmd-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #ff3b3b;
+}
+
+/* Show tooltip on hover */
+.wmd-highlight:hover .wmd-tooltip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.wmd-icon {
+  font-size: 16px !important;
+  flex-shrink: 0;
+}
+
+.wmd-text strong {
+  color: #ff6b6b !important;
+  font-weight: 600 !important;
+}
+
+.wmd-text em {
+  color: #ffd166 !important;
+  font-style: normal !important;
+  text-transform: capitalize;
+}

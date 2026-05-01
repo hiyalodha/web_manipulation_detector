@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Manipulation Detector</title>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 300px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f0f1a;
+      color: #e8e8f0;
+      font-size: 13px;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      padding: 16px;
+      border-bottom: 1px solid #ff3b3b44;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      font-size: 22px;
+    }
+
+    .title-block h1 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ff6b6b;
+      letter-spacing: 0.5px;
+    }
+
+    .title-block p {
+      font-size: 10px;
+      color: #888;
+      margin-top: 1px;
+    }
+
+    /* ── Toggle switch ── */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #13131f;
+      border-bottom: 1px solid #ffffff0d;
+    }
+
+    .toggle-label {
+      font-size: 12px;
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    .switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #333;
+      border-radius: 22px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      left: 3px;
+      top: 3px;
+      transition: transform 0.2s;
+    }
+
+    input:checked + .slider { background: #ff3b3b; }
+    input:checked + .slider::before { transform: translateX(18px); }
+
+    /* ── Score card ── */
+    .score-card {
+      margin: 14px 16px;
+      background: #1a1a2e;
+      border: 1px solid #ffffff10;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .score-number {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1;
+      color: #ff3b3b;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .score-number.safe { color: #2ecc71; }
+    .score-number.medium { color: #f39c12; }
+
+    .score-label {
+      font-size: 11px;
+      color: #666;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 11px;
+      color: #888;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #2ecc71;
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.offline { background: #e74c3c; animation: none; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── Flags list ── */
+    .section-title {
+      padding: 8px 16px 4px;
+      font-size: 10px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .flags-list {
+      padding: 0 16px 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-height: 30px;
+    }
+
+    .flag-tag {
+      background: #ff3b3b22;
+      border: 1px solid #ff3b3b55;
+      color: #ff8080;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    .flag-tag.urgency   { border-color: #e74c3c88; color: #e74c3c; background: #e74c3c18; }
+    .flag-tag.scarcity  { border-color: #f39c1288; color: #f39c12; background: #f39c1218; }
+    .flag-tag.pressure  { border-color: #9b59b688; color: #9b59b6; background: #9b59b618; }
+
+    .no-flags {
+      font-size: 11px;
+      color: #444;
+      font-style: italic;
+    }
+
+    /* ── Actions ── */
+    .actions {
+      padding: 10px 16px 14px;
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-scan {
+      background: #ff3b3b;
+      color: white;
+    }
+
+    .btn-scan:hover { background: #e02d2d; }
+
+    .btn-clear {
+      background: #1f1f30;
+      color: #888;
+      border: 1px solid #ffffff12;
+    }
+
+    .btn-clear:hover { background: #252538; color: #aaa; }
+
+    /* ── Footer ── */
+    .footer {
+      border-top: 1px solid #ffffff08;
+      padding: 8px 16px;
+      font-size: 10px;
+      color: #333;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="logo">🛡️</span>
+    <div class="title-block">
+      <h1>MANIPULATION DETECTOR</h1>
+      <p>Dark pattern shield for the web</p>
+    </div>
+  </div>
+
+  <!-- ON/OFF Toggle -->
+  <div class="toggle-row">
+    <span class="toggle-label">Scanner active</span>
+    <label class="switch">
+      <input type="checkbox" id="toggleSwitch" checked />
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <!-- Count card -->
+  <div class="score-card">
+    <div class="score-number safe" id="countDisplay">0</div>
+    <div class="score-label">dark patterns detected</div>
+  </div>
+
+  <!-- Backend status -->
+  <div class="status-bar">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">Checking backend…</span>
+  </div>
+
+  <!-- Detected flag types -->
+  <div class="section-title">Pattern types found</div>
+  <div class="flags-list" id="flagsList">
+    <span class="no-flags">None yet — run a scan</span>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="actions">
+    <button class="btn-scan" id="scanBtn">🔍 Scan Page</button>
+    <button class="btn-clear" id="clearBtn">✕ Clear</button>
+  </div>
+
+  <div class="footer">v1.0 · Rule-based engine · College demo build</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
