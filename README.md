@@ -22,3 +22,14 @@ Built with a **Chrome Extension** (JavaScript) + **Spring Boot REST API** (Java)
 
 ## Tech Stack
 Java 23 · Spring Boot 3.3 · JavaScript · Chrome Manifest V3 · JUnit 5
+
+---
+
+## How to Use
+
+1. Start the backend — `mvn spring-boot:run`
+2. Open Chrome → `chrome://extensions`
+3. Enable **Developer mode** (top right toggle)
+4. Click **Load unpacked** → select the `extension/` folder
+5. Pin the extension to your toolbar
+6. Visit any website → click the shield icon → click **Scan Page**
